@@ -62,4 +62,77 @@ describe('ReservaService - Funcionalidade 1: Criar reserva válida', () => {
       expect(reservas[0].sala.nome).toBe('Sala 101');
     });
   });
+
+  describe('Validações ao criar reserva', () => {
+    const dataInicio = new Date('2025-12-10T14:00:00');
+    const dataFim = new Date('2025-12-10T16:00:00');
+
+    test('deve lançar erro quando sala for nula', () => {
+      expect(() => {
+        reservaService.criarReserva(null, dataInicio, dataFim, 'João Silva', 4);
+      }).toThrow('Sala inválida');
+    });
+
+    test('deve lançar erro quando sala não tiver nome', () => {
+      const salaInvalida = { capacidade: 6 };
+      
+      expect(() => {
+        reservaService.criarReserva(salaInvalida, dataInicio, dataFim, 'João Silva', 4);
+      }).toThrow('Sala inválida');
+    });
+
+    test('deve lançar erro quando data de início for inválida', () => {
+      expect(() => {
+        reservaService.criarReserva(sala101, 'data-invalida', dataFim, 'João Silva', 4);
+      }).toThrow('Data de início inválida');
+    });
+
+    test('deve lançar erro quando data de término for inválida', () => {
+      expect(() => {
+        reservaService.criarReserva(sala101, dataInicio, 'data-invalida', 'João Silva', 4);
+      }).toThrow('Data de término inválida');
+    });
+
+    test('deve lançar erro quando usuário for vazio', () => {
+      expect(() => {
+        reservaService.criarReserva(sala101, dataInicio, dataFim, '', 4);
+      }).toThrow('Usuário é obrigatório');
+    });
+
+    test('deve lançar erro quando usuário for apenas espaços em branco', () => {
+      expect(() => {
+        reservaService.criarReserva(sala101, dataInicio, dataFim, '   ', 4);
+      }).toThrow('Usuário é obrigatório');
+    });
+
+    test('deve lançar erro quando usuário for nulo', () => {
+      expect(() => {
+        reservaService.criarReserva(sala101, dataInicio, dataFim, null, 4);
+      }).toThrow('Usuário é obrigatório');
+    });
+
+    test('deve lançar erro quando número de pessoas for zero', () => {
+      expect(() => {
+        reservaService.criarReserva(sala101, dataInicio, dataFim, 'João Silva', 0);
+      }).toThrow('Número de pessoas deve ser um inteiro positivo');
+    });
+
+    test('deve lançar erro quando número de pessoas for negativo', () => {
+      expect(() => {
+        reservaService.criarReserva(sala101, dataInicio, dataFim, 'João Silva', -5);
+      }).toThrow('Número de pessoas deve ser um inteiro positivo');
+    });
+
+    test('deve lançar erro quando número de pessoas for decimal', () => {
+      expect(() => {
+        reservaService.criarReserva(sala101, dataInicio, dataFim, 'João Silva', 3.5);
+      }).toThrow('Número de pessoas deve ser um inteiro positivo');
+    });
+
+    test('deve lançar erro quando número de pessoas for nulo', () => {
+      expect(() => {
+        reservaService.criarReserva(sala101, dataInicio, dataFim, 'João Silva', null);
+      }).toThrow('Número de pessoas deve ser um inteiro positivo');
+    });
+  });
 });
