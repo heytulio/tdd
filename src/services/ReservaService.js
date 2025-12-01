@@ -18,14 +18,14 @@ class ReservaService {
       dataFim,
       usuario,
       numeroPessoas,
-      status: 'ATIVA'
+      status: "ATIVA",
     };
 
     this.reservas.push(reserva);
 
     return {
       reserva,
-      mensagem: 'Reserva realizada com sucesso'
+      mensagem: "Reserva realizada com sucesso",
     };
   }
 
@@ -37,28 +37,38 @@ class ReservaService {
 
   _validarSala(sala) {
     if (!sala || !sala.nome || !sala.capacidade) {
-      throw new Error('Sala inválida');
+      throw new Error("Sala inválida");
     }
   }
 
   _validarDatas(dataInicio, dataFim) {
     if (!(dataInicio instanceof Date) || isNaN(dataInicio.getTime())) {
-      throw new Error('Data de início inválida');
+      throw new Error("Data de início inválida");
     }
     if (!(dataFim instanceof Date) || isNaN(dataFim.getTime())) {
-      throw new Error('Data de término inválida');
+      throw new Error("Data de término inválida");
+    }
+
+    if (dataInicio.getTime() >= dataFim.getTime()) {
+      throw new Error(
+        "Horario invalido inserido, data inicial deve ser anterior a data final"
+      );
     }
   }
 
   _validarUsuario(usuario) {
-    if (!usuario || typeof usuario !== 'string' || usuario.trim() === '') {
-      throw new Error('Usuário é obrigatório');
+    if (!usuario || typeof usuario !== "string" || usuario.trim() === "") {
+      throw new Error("Usuário é obrigatório");
     }
   }
 
   _validarNumeroPessoas(numeroPessoas) {
-    if (!numeroPessoas || numeroPessoas <= 0 || !Number.isInteger(numeroPessoas)) {
-      throw new Error('Número de pessoas deve ser um inteiro positivo');
+    if (
+      !numeroPessoas ||
+      numeroPessoas <= 0 ||
+      !Number.isInteger(numeroPessoas)
+    ) {
+      throw new Error("Número de pessoas deve ser um inteiro positivo");
     }
   }
 
