@@ -13,6 +13,10 @@ class ReservaService {
     this._validarNumeroPessoas(numeroPessoas);
     this._verificarConflitoHorario(sala, dataInicio, dataFim);
 
+    // Validar capacidade da sala
+    if (typeof sala.capacidade === 'number' && numeroPessoas > sala.capacidade) {
+      throw new Error("Número de pessoas excede a capacidade da sala");
+    }
 
     // Criar reserva
     const reserva = {
