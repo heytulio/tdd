@@ -238,6 +238,24 @@ describe("ReservaService", () => {
       });
     });
 
+    describe("Ciclo 4: Validar capacidade da sala", () => {
+      test("deve lançar erro quando número de pessoas exceder a capacidade da sala", () => {
+        // DADO: Sala com capacidade 4
+        const salaPequena = new Sala("Sala Pequena", 4);
+
+        // QUANDO/ENTÃO: tentar reservar para 6 pessoas lança erro
+        expect(() => {
+          reservaService.criarReserva(
+            salaPequena,
+            new Date("2025-12-10T14:00:00"),
+            new Date("2025-12-10T16:00:00"),
+            "Carlos",
+            6
+          );
+        }).toThrow("Número de pessoas excede a capacidade da sala");
+      });
+    });
+
 
     test("deve lançar erro quando data início é igual à data fim", () => {
       // DADO: Dados inválidos (mesma hora)
