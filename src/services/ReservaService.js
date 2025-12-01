@@ -12,6 +12,17 @@ class ReservaService {
     this._validarUsuario(usuario);
     this._validarNumeroPessoas(numeroPessoas);
 
+    // Verificar conflito de horário
+    for (const r of this.reservas) {
+      const mesmaSala = r.sala.nome === sala.nome;
+      const sobrepoe =
+        dataInicio < r.dataFim && dataFim > r.dataInicio;
+
+      if (mesmaSala && sobrepoe) {
+        throw new Error("Já existe reserva neste horário para esta sala");
+      }
+    }
+
     // Criar reserva
     const reserva = {
       id: this._gerarId(),
