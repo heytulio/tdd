@@ -1,3 +1,5 @@
+const HorarioInvalidoError = require("../errors/HorarioInvalido.js");
+
 class ReservaService {
   constructor() {
     this.reservas = [];
@@ -50,7 +52,7 @@ class ReservaService {
     }
 
     if (dataInicio.getTime() >= dataFim.getTime()) {
-      throw new Error(
+      throw new HorarioInvalidoError(
         "Horario invalido inserido, data inicial deve ser anterior a data final"
       );
     }
