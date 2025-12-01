@@ -214,6 +214,31 @@ describe("ReservaService", () => {
       );
     });
 
+    describe("Ciclo 3: Impedir conflito de horário", () => {
+      test("deve impedir criar reserva quando já existir outra reserva sobreposta na mesma sala", () => {
+        // DADO: uma reserva já cadastrada das 14h às 16h
+        const r1 = reservaService.criarReserva(
+          sala101,
+          new Date("2025-12-10T14:00:00"),
+          new Date("2025-12-10T16:00:00"),
+          "Aluno 1",
+          4
+        );
+
+        // QUANDO/ENTÃO: tentar cadastrar outra das 15h às 17h deve gerar erro
+        expect(() => {
+          reservaService.criarReserva(
+            sala101,
+            new Date("2025-12-10T15:00:00"),
+            new Date("2025-12-10T17:00:00"),
+            "Aluno 2",
+            2
+          );
+        }).toThrow("Já existe reserva neste horário para esta sala");
+      });
+    });
+
+
     test("deve lançar erro quando data início é igual à data fim", () => {
       // DADO: Dados inválidos (mesma hora)
       const dataInicio = new Date("2025-12-10T14:00:00");
