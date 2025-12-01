@@ -12,11 +12,8 @@ class ReservaService {
     this._validarUsuario(usuario);
     this._validarNumeroPessoas(numeroPessoas);
     this._verificarConflitoHorario(sala, dataInicio, dataFim);
+    this._validarCapacidadeDaSala(sala, numeroPessoas);
 
-    // Validar capacidade da sala
-    if (typeof sala.capacidade === 'number' && numeroPessoas > sala.capacidade) {
-      throw new Error("Número de pessoas excede a capacidade da sala");
-    }
 
     // Criar reserva
     const reserva = {
@@ -88,6 +85,12 @@ class ReservaService {
       if (mesmaSala && sobrepoe) {
         throw new Error("Já existe reserva neste horário para esta sala");
       }
+    }
+  }
+
+  _validarCapacidadeDaSala(sala, numeroPessoas) {
+    if (numeroPessoas > sala.capacidade) {
+      throw new Error("Número de pessoas excede a capacidade da sala");
     }
   }
 
