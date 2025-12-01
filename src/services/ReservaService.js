@@ -11,6 +11,8 @@ class ReservaService {
     this._validarDatas(dataInicio, dataFim);
     this._validarUsuario(usuario);
     this._validarNumeroPessoas(numeroPessoas);
+    this._verificarConflitoHorario(sala, dataInicio, dataFim);
+
 
     // Criar reserva
     const reserva = {
@@ -71,6 +73,17 @@ class ReservaService {
       !Number.isInteger(numeroPessoas)
     ) {
       throw new Error("Número de pessoas deve ser um inteiro positivo");
+    }
+  }
+
+  _verificarConflitoHorario(sala, dataInicio, dataFim) {
+    for (const r of this.reservas) {
+      const mesmaSala = r.sala.nome === sala.nome;
+      const sobrepoe = dataInicio < r.dataFim && dataFim > r.dataInicio;
+
+      if (mesmaSala && sobrepoe) {
+        throw new Error("Já existe reserva neste horário para esta sala");
+      }
     }
   }
 
