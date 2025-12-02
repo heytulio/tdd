@@ -256,6 +256,35 @@ describe("ReservaService", () => {
       });
     });
 
+    describe("Ciclo 5: Cancelar reserva", () => {
+      test("deve cancelar uma reserva existente e mudar status para CANCELADA", () => {
+        // DADO: uma reserva cadastrada
+        const dataInicio = new Date("2025-12-10T14:00:00");
+        const dataFim = new Date("2025-12-10T16:00:00");
+
+        const resultado = reservaService.criarReserva(
+          sala101,
+          dataInicio,
+          dataFim,
+          "João Silva",
+          4
+        );
+
+        const idReserva = resultado.reserva.id;
+
+        // QUANDO: cancelar a reserva
+        const cancelada = reservaService.cancelarReserva(idReserva);
+
+        // ENTÃO: reserva deve ficar com status CANCELADA
+        expect(cancelada.status).toBe("CANCELADA");
+      });
+
+      test("deve lançar erro ao tentar cancelar reserva inexistente", () => {
+        expect(() => {
+          reservaService.cancelarReserva("RES-NAO-EXISTE");
+        }).toThrow("Reserva não encontrada");
+      });
+    });
 
     test("deve lançar erro quando data início é igual à data fim", () => {
       // DADO: Dados inválidos (mesma hora)
