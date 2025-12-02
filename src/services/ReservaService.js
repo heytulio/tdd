@@ -34,6 +34,21 @@ class ReservaService {
     };
   }
 
+  cancelarReserva(idReserva) {
+    // Buscar reserva pelo ID
+    const reserva = this.reservas.find(r => r.id === idReserva);
+
+    // Se não existir, lançar erro
+    if (!reserva) {
+      throw new Error("Reserva não encontrada");
+    }
+
+    // Atualizar status
+    reserva.status = "CANCELADA";
+
+    return reserva;
+  }
+
   listarReservas() {
     return this.reservas;
   }
