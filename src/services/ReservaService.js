@@ -34,6 +34,21 @@ class ReservaService {
     };
   }
 
+  cancelarReserva(idReserva) {
+    // Busca reserva pelo ID
+    const reserva = this._buscarReservaPorId(idReserva);
+
+    // Se não existir, lança erro
+    if (!reserva) {
+      throw new Error("Reserva não encontrada");
+    }
+
+    // Atualiza status
+    reserva.status = "CANCELADA";
+
+    return reserva;
+  }
+
   listarReservas() {
     return this.reservas;
   }
@@ -92,6 +107,11 @@ class ReservaService {
     if (numeroPessoas > sala.capacidade) {
       throw new Error("Número de pessoas excede a capacidade da sala");
     }
+  }
+
+  // buscar por ID para cancelar reserva
+  _buscarReservaPorId(idReserva) {
+    return this.reservas.find(r => r.id === idReserva);
   }
 
   _gerarId() {
