@@ -98,20 +98,22 @@ class ReservaService {
 
       if (mesmaSala && sobrepoe) {
         const erro = new Error("Já existe reserva neste horário para esta sala");
-
-        // Gerar sugestões
-        erro.sugestoes = [
-          {
-            inicio: new Date(r.dataFim.getTime()), // imediatamente após a reserva existente
-            fim: new Date(r.dataFim.getTime() + (dataFim - dataInicio)), // preserva a duração
-          },
-        ];
-
-        throw erro; // relança o erro com sugestões
+        erro.sugestoes = this._gerarSugestoes(r, dataInicio, dataFim);
+        throw erro;
       }
     }
   }
 
+  _gerarSugestoes(reservaExistente, dataInicio, dataFim) {
+    const duracao = dataFim - dataInicio;
+
+    return [
+      {
+        inicio: new Date(reservaExistente.dataFim.getTime()),
+        fim: new Date(reservaExistente.dataFim.getTime() + duracao),
+      },
+    ];
+  }
 
   _validarCapacidadeDaSala(sala, numeroPessoas) {
     if (numeroPessoas > sala.capacidade) {
