@@ -97,10 +97,21 @@ class ReservaService {
       const sobrepoe = dataInicio < r.dataFim && dataFim > r.dataInicio;
 
       if (mesmaSala && sobrepoe) {
-        throw new Error("Já existe reserva neste horário para esta sala");
+        const erro = new Error("Já existe reserva neste horário para esta sala");
+
+        // Gerar sugestões
+        erro.sugestoes = [
+          {
+            inicio: new Date(r.dataFim.getTime()), // imediatamente após a reserva existente
+            fim: new Date(r.dataFim.getTime() + (dataFim - dataInicio)), // preserva a duração
+          },
+        ];
+
+        throw erro; // relança o erro com sugestões
       }
     }
   }
+
 
   _validarCapacidadeDaSala(sala, numeroPessoas) {
     if (numeroPessoas > sala.capacidade) {
