@@ -14,7 +14,6 @@ class ReservaService {
     this._verificarConflitoHorario(sala, dataInicio, dataFim);
     this._validarCapacidadeDaSala(sala, numeroPessoas);
 
-
     // Criar reserva
     const reserva = {
       id: this._gerarId(),
@@ -111,7 +110,7 @@ class ReservaService {
 
   // buscar por ID para cancelar reserva
   _buscarReservaPorId(idReserva) {
-    return this.reservas.find(r => r.id === idReserva);
+    return this.reservas.find((r) => r.id === idReserva);
   }
 
   _gerarId() {
