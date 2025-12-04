@@ -286,6 +286,56 @@ describe("ReservaService", () => {
       });
     });
 
+    describe("Ciclo 6: Sugerir horários alternativos", () => {
+      test("deve sugerir horários alternativos quando houver conflito de horário", () => {
+        // DADO: uma sala com capacidade suficiente
+        const sala = new Sala("Sala 101", 6);
+
+        // DADO: uma reserva existente das 14h às 16h
+        reservaService.criarReserva(
+          sala,
+          new Date("2025-12-10T14:00:00"),
+          new Date("2025-12-10T16:00:00"),
+          "Aluno 1",
+          4
+        );
+
+        // QUANDO: o usuário tenta reservar das 15h às 17h (conflito)
+        try {
+          reservaService.criarReserva(
+            sala,
+            new Date("2025-12-10T15:00:00"),
+            new Date("2025-12-10T17:00:00"),
+            "Aluno 2",
+            3
+          );
+
+          // ENTÃO: se não lançar erro, teste falha
+          throw new Error("Esperava erro de conflito, mas reserva foi criada");
+        } catch (error) {
+          // ENTÃO: deve detectar conflito de horário
+          expect(error.message).toBe(
+            "Já existe reserva neste horário para esta sala"
+          );
+
+          // ENTÃO: erro deve conter sugestões de horários alternativos
+          expect(error.sugestoes).toBeDefined();
+          expect(Array.isArray(error.sugestoes)).toBe(true);
+          expect(error.sugestoes.length).toBeGreaterThan(0);
+
+          // ENTÃO: todos os horários sugeridos não podem sobrepor a reserva existente
+          for (const s of error.sugestoes) {
+            const inicioValido =
+              s.inicio >= new Date("2025-12-10T16:00:00") ||
+              s.fim <= new Date("2025-12-10T14:00:00");
+
+            expect(inicioValido).toBe(true);
+          }
+        }
+      });
+    });
+
+
     test("deve lançar erro quando data início é igual à data fim", () => {
       // DADO: Dados inválidos (mesma hora)
       const dataInicio = new Date("2025-12-10T14:00:00");
