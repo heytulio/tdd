@@ -30,8 +30,11 @@ module.exports = new (class ReservaController {
 
       return res.status(201).json(resultado);
     } catch (error) {
-      if (error.message === "Já existe reserva neste horário para esta sala") {
-        return res.status(409).json({ error: error.message });
+      if (error.name === "Conflito Horario") {
+        return res.status(409).json({
+          error: error.message,
+          sugestao: error.sugestoes,
+        });
       }
       return res.status(400).json({ error: error.message });
     }

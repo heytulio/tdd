@@ -1,4 +1,5 @@
 const HorarioInvalidoError = require("../errors/HorarioInvalido.js");
+const ConflitoHorarioError = require("../errors/ConflitoHorario.js");
 
 class ReservaService {
   constructor() {
@@ -97,8 +98,11 @@ class ReservaService {
       const sobrepoe = dataInicio < r.dataFim && dataFim > r.dataInicio;
 
       if (mesmaSala && sobrepoe) {
-        const erro = new Error("Já existe reserva neste horário para esta sala");
-        erro.sugestoes = this._gerarSugestoes(r, dataInicio, dataFim);
+        const erro = new ConflitoHorarioError(
+          "Já existe reserva neste horário para esta sala",
+          409,
+          this._gerarSugestoes(r, dataInicio, dataFim)
+        );
         throw erro;
       }
     }
@@ -109,6 +113,7 @@ class ReservaService {
 
     return [
       {
+        message: "Sugestões de Horarios",
         inicio: new Date(reservaExistente.dataFim.getTime()),
         fim: new Date(reservaExistente.dataFim.getTime() + duracao),
       },
